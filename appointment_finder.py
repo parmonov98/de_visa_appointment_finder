@@ -88,8 +88,8 @@ def find_appointment_info():
 
 
 def send_email(text):
-    subject = 'UK VISA Appointment vacancy alert'
-    content = [f'Appointment for UK VISA: {text}']
+    subject = 'DE VISA 🇩🇪 Appointment vacancy alert'
+    content = [f'Appointment for VISA: {text}']
 
     with yagmail.SMTP(SENDER_EMAIL, APP_PASSWORD) as yag:
         yag.send(RECEIVER_EMAIL, subject, content)
