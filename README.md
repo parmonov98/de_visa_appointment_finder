@@ -18,7 +18,6 @@ It repeatedly checks for the appointment with some delay. When it finds an appoi
    ...
    ```
 4. Install dependencies.
-    - `pip install -r requirements.txt` OR
     - `conda env create -f env.yml`
 5. run `python appointment_finder.py &`
     - this would run in the background and sends an alert when an empty slot is found, containing the date of the available appointment.
