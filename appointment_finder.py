@@ -24,6 +24,7 @@ def login():
     wait = WebDriverWait(driver, 20)
 
     wait.until(EC.title_contains('Login'))
+
     # reject all cookies
     wait.until(EC.element_to_be_clickable((By.ID, 'onetrust-reject-all-handler'))).click()
 
@@ -44,6 +45,7 @@ def login():
 
 
 def go_to_homepage():
+    # it's not possible to refresh the page. So, click on the top left VFS Global image to go to homepage
     home_elem = driver.find_element_by_xpath('/html/body/app-root/header/div[1]/div/a/img')
     home_elem.click()
     sleep(3)
@@ -77,6 +79,8 @@ def find_appointment_info():
     n += 2
 
     sleep(3)
+
+    # grab appointment info from the alert box
     alert_box = driver.find_element_by_css_selector('.alert')
     text = alert_box.text
 
@@ -99,8 +103,11 @@ if __name__ == "__main__":
         try:
             driver = webdriver.Firefox()
             driver.get(URL)
+
             login()
             sleep(5)
+
+            # for some reason, the select value keeps incrementing by 2 for every selection. So, keep track of it with `n`
             n = 1
 
             while True:
