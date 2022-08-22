@@ -31,6 +31,9 @@ when appointment is found, send an email
 6. run `python appointment_finder.py &`
     - this would run in the background and sends an alert when an empty slot is found, containing the date of the available appointment.
 
+### Assumptions
+This applications needs [Firefox](https://www.mozilla.org/en-US/firefox/new/) browser and [geckodriver](https://www.guru99.com/gecko-marionette-driver-selenium.html). It is assumed that the user already has these installed.
+
 ## VISA type Configuration
 
 This application by default looks for `Schengen VISA` for `family & friends` at `New Delhi - Visa Application Center`. If you want to change it, then before running this application, do the following:
