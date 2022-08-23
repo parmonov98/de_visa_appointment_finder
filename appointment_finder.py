@@ -94,6 +94,15 @@ def send_email(text):
         yag.send(RECEIVER_EMAIL, subject, content)
 
 
+def get_profile():
+    profile = webdriver.FirefoxProfile()
+    profile.set_preference("browser.cache.disk.enable", False)
+    profile.set_preference("browser.cache.memory.enable", False)
+    profile.set_preference("browser.cache.offline.enable", False)
+    profile.set_preference("network.http.use-cache", False)
+    return profile
+
+
 if __name__ == "__main__":
     STATUS = False
     # restart the service if it crashes unexpectedly and stop finally when the appointment is found. 
@@ -102,7 +111,8 @@ if __name__ == "__main__":
             print('sleeping for 2 minutes')
             sleep(120)
         try:
-            driver = webdriver.Firefox()
+            profile = get_profile()
+            driver = webdriver.Firefox(profile)
             driver.get(URL)
 
             login()
@@ -123,3 +133,5 @@ if __name__ == "__main__":
             print(f'error encountered: {e}')
         finally:        
             driver.quit()
+            driver.delete_all_cookies()
+
