@@ -51,34 +51,34 @@ def go_to_homepage():
     sleep(3)
 
 
-def find_appointment_info():
-    global driver, n
+def click_until_last_category():
     wait = WebDriverWait(driver, 20)
     # new booking
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.d-none > span:nth-child(1)'))).click()
 
     # choose New Delhi
     sleep(2)
-    wait.until(EC.element_to_be_clickable((By.XPATH, f'//*[@id="mat-select-value-{n}"]'))).click()
+    wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mat-select-value-1"]'))).click()
     driver.find_elements_by_class_name('mat-option-text')[12].click()
 
-    n += 2
     # schengen visa
     sleep(3)
-    wait.until(EC.element_to_be_clickable((By.XPATH, f'//*[@id="mat-select-value-{n}"]'))).click()
+    wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mat-select-value-3"]'))).click()
     driver.find_elements_by_class_name('mat-option-text')[-1].click()
 
-    n += 2
-
-    # family & friends
     sleep(3)
-    wait.until(EC.element_to_be_clickable((By.XPATH, f'//*[@id="mat-select-value-{n}"]'))).click()
-    driver.find_elements_by_class_name('mat-option-text')[-1].click()
+    return
 
-    n += 2
 
-    sleep(3)
+def click_last_category(pos):
+    wait = WebDriverWait(driver, 20)
+    wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mat-select-value-5"]'))).click()
+    driver.find_elements_by_class_name('mat-option-text')[pos].click()
+    sleep(2)
+    return get_appointment_info()
 
+
+def get_appointment_info():
     # grab appointment info from the alert box
     alert_box = driver.find_element_by_css_selector('.alert')
     text = alert_box.text
@@ -118,19 +118,23 @@ if __name__ == "__main__":
             login()
             sleep(5)
 
-            # for some reason, the select value keeps incrementing by 2 for every selection. So, keep track of it with `n`
-            n = 1
-
+            # select first two categories
+            click_until_last_category()
+            COUNTER = 0
             while True:
-                text = find_appointment_info()
-                if text.startswith('No appointment'):
-                    # keep clearing cache, cookies once in a while
-                    if not n%100: break
-                    go_to_homepage()
-                else:
+                # keep changing the last category alternately to force reload the status
+                # this way, it's fast and doesn't need to go through all the options from the start again
+                text = click_last_category(11)
+                if not text.startswith('No appointment'):
                     send_email(text)
                     STATUS = True
                     break
+                else:
+                    _ = click_last_category(10)  # or anything other than our required category
+                    COUNTER += 1
+                    # exit to clear cookies every once in a while
+                    if not COUNTER%100: break
+                sleep(1)
         except Exception as e:
             print(f'error encountered: {e}')
         finally:        
