@@ -124,6 +124,8 @@ if __name__ == "__main__":
             while True:
                 text = find_appointment_info()
                 if text.startswith('No appointment'):
+                    # keep clearing cache, cookies once in a while
+                    if not n%100: break
                     go_to_homepage()
                 else:
                     send_email(text)
