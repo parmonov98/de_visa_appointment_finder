@@ -53,7 +53,6 @@ def go_to_homepage():
 
 def find_appointment_info():
     global driver, n
-    sleep(5)
     wait = WebDriverWait(driver, 20)
     # new booking
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.d-none > span:nth-child(1)'))).click()
