@@ -30,12 +30,14 @@ when appointment is found, send an email
 5. Activate conda environment: `conda activate visa`
 6. run `python appointment_finder.py &`
     - this would run in the background and sends an alert when an empty slot is found, containing the date of the available appointment.
+    - sometimes, it might happen that you're busy and didn't notice your email and by the time you do, the slot was taken. 
+      Hence, this script keeps on running even after finding an appointment (after waiting for a few minutes), so that it keeps checking for new slots all the time.
+      When you're finally done, do `kill %1` to stop the python program.
 
 ### Assumptions
 This applications needs [Firefox](https://www.mozilla.org/en-US/firefox/new/) browser and [geckodriver](https://www.guru99.com/gecko-marionette-driver-selenium.html). It is assumed that the user already has these installed.
 
 ## VISA type Configuration
-
 This application by default looks for `Schengen VISA` for `family & friends` at `New Delhi - Visa Application Center`. If you want to change it, then before running this application, do the following:
 1. login to the website manually and click on `New Booking`.
 2. In the three drop down menus that are shown, the first one contains the list of visa application centers.

@@ -98,7 +98,9 @@ if __name__ == "__main__":
     STATUS = False
     # restart the service if it crashes unexpectedly and stop finally when the appointment is found. 
     while True:
-        if STATUS: break
+        if STATUS:
+            print('sleeping for 2 minutes')
+            sleep(120)
         try:
             driver = webdriver.Firefox()
             driver.get(URL)
