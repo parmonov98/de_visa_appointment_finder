@@ -134,6 +134,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f'error encountered: {e}')
         finally:        
-            driver.quit()
             driver.delete_all_cookies()
+            sleep(2)
+            driver.quit()
 
