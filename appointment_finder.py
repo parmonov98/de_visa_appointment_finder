@@ -126,6 +126,7 @@ if __name__ == "__main__":
                 # this way, it's fast and doesn't need to go through all the options from the start again
                 text = click_last_category(11)
                 if not text.startswith('No appointment'):
+                    print(text)
                     send_email(text)
                     STATUS = True
                     break
