@@ -78,6 +78,29 @@ def click_last_category(pos):
     return get_appointment_info()
 
 
+def cycle_last_category():
+    """ keep changing the last category alternately to force reload the status.
+    This way, it's fast and doesn't need to go through all the options from the start again """
+
+    COUNTER = 0
+    last_appointment_text = None
+    while True:
+        text = click_last_category(11)
+        if not text.startswith('No appointment') and text != last_appointment_text:
+            last_appointment_text = text
+            print(text)
+            send_email(text)
+            print('sleeping for 2 minutes')
+            sleep(120)
+        else:
+            _ = click_last_category(10)  # or anything other than our required category
+            COUNTER += 1
+            if not COUNTER%100:
+                print('restarting to clear cookies...')
+                break
+    sleep(1)
+
+
 def get_appointment_info():
     # grab appointment info from the alert box
     alert_box = driver.find_element_by_css_selector('.alert')
@@ -95,6 +118,7 @@ def send_email(text):
 
 
 def get_profile():
+    # return profile with cache disabled
     profile = webdriver.FirefoxProfile()
     profile.set_preference("browser.cache.disk.enable", False)
     profile.set_preference("browser.cache.memory.enable", False)
@@ -104,12 +128,8 @@ def get_profile():
 
 
 if __name__ == "__main__":
-    STATUS = False
-    # restart the service if it crashes unexpectedly and stop finally when the appointment is found. 
+    # keep checking for appointments forever (unless stopped explicitly from cmdline)
     while True:
-        if STATUS:
-            print('sleeping for 2 minutes')
-            sleep(120)
         try:
             profile = get_profile()
             driver = webdriver.Firefox(profile)
@@ -118,24 +138,10 @@ if __name__ == "__main__":
             login()
             sleep(5)
 
-            # select first two categories
+            # select first two categories and cycle the last one
             click_until_last_category()
-            COUNTER = 0
-            while True:
-                # keep changing the last category alternately to force reload the status
-                # this way, it's fast and doesn't need to go through all the options from the start again
-                text = click_last_category(11)
-                if not text.startswith('No appointment'):
-                    print(text)
-                    send_email(text)
-                    STATUS = True
-                    break
-                else:
-                    _ = click_last_category(10)  # or anything other than our required category
-                    COUNTER += 1
-                    # exit to clear cookies every once in a while
-                    if not COUNTER%100: break
-                sleep(1)
+            cycle_last_category()
+
         except Exception as e:
             print(f'error encountered: {e}')
         finally:        
