@@ -1,7 +1,7 @@
 import os
 import yagmail
 
-from time import sleep
+from time import sleep, strptime
 from dotenv import load_dotenv
 
 from selenium import webdriver
@@ -78,15 +78,39 @@ def click_last_category(pos):
     return get_appointment_info()
 
 
+def preprocess_appointment_date(appointment_date):
+    ad = appointment_date
+    month = ad[:3]
+    day = ad.split()[1].replace(',', '').zfill(2)
+    year = ad[-4:]
+    return f'{month} {day}, {year}'
+
+
+def earlier_than_deadline(appointment, deadline):
+    """check whether the appointment date is earlier than the preferred deadline date.
+    Both dates should be in the format 'Jan 31, 2022'"""
+
+    deadline_date = strptime(deadline, '%b %d, %Y')
+    appointment_date = strptime(preprocess_appointment_date(appointment), '%b %d, %Y')
+
+    return ((appointment_date.tm_year <= deadline_date.tm_year) and
+            (appointment_date.tm_mon <= deadline_date.tm_mon) and
+            (appointment_date.tm_mday <= deadline_date.tm_mday))
+
+
 def cycle_last_category():
     """ keep changing the last category alternately to force reload the status.
     This way, it's fast and doesn't need to go through all the options from the start again """
 
     COUNTER = 0
+    DEADLINE = 'Oct 20, 2022'
     last_appointment_text = None
     while True:
         text = click_last_category(11)
-        if not text.startswith('No appointment') and text != last_appointment_text:
+        appointment_date = text.split(':')[-1].strip()
+        if ((not text.startswith('No appointment')) and
+            (earlier_than_deadline(appointment_date, DEADLINE)) and
+            (text != last_appointment_text)):
             last_appointment_text = text
             print(text)
             send_email(text)
