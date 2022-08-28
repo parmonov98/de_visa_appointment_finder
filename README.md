@@ -56,3 +56,11 @@ This application by default looks for `Schengen VISA` for `family & friends` at 
 
 
 Good Luck!
+
+
+# DISCLAIMER
+
+I only made this as a cool fun side-project which would solve my own use case. If in case you use this service, I am not liable for any consequences/damages resulting from it whatsoever.
+The information contained herein is for general information purposes only. You should not rely on this as a basis for making any business, legal or any other decisions.
+Any reliance you place on this is therefore strictly at your own risk.
+
