@@ -51,30 +51,32 @@ def go_to_homepage():
     sleep(3)
 
 
-def click_until_last_category():
+def click_new_booking():
     wait = WebDriverWait(driver, 20)
+    sleep(4)
     # new booking
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.d-none > span:nth-child(1)'))).click()
 
-    # choose New Delhi
+
+def select_first_category():
+    wait = WebDriverWait(driver, 20)
     sleep(2)
     wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mat-select-value-1"]'))).click()
     driver.find_elements_by_class_name('mat-option-text')[12].click()
 
-    # schengen visa
+
+def select_second_category(random=False):
+    wait = WebDriverWait(driver, 20)
     sleep(3)
     wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mat-select-value-3"]'))).click()
-    driver.find_elements_by_class_name('mat-option-text')[-1].click()
-
-    sleep(3)
-    return
+    driver.find_elements_by_class_name('mat-option-text')[-1 if not random else -3].click()
 
 
-def click_last_category(pos):
+def select_last_category():
     wait = WebDriverWait(driver, 20)
-    wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mat-select-value-5"]'))).click()
-    driver.find_elements_by_class_name('mat-option-text')[pos].click()
     sleep(2)
+    wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mat-select-value-5"]'))).click()
+    driver.find_elements_by_class_name('mat-option-text')[-1].click()
     return get_appointment_info()
 
 
@@ -98,34 +100,41 @@ def earlier_than_deadline(appointment, deadline):
             (appointment_date.tm_mday <= deadline_date.tm_mday))
 
 
-def cycle_last_category():
-    """ keep changing the last category alternately to force reload the status.
+def cycle_last_two_categories():
+    """ keep changing the last two categories alternately to force reload the status.
     This way, it's fast and doesn't need to go through all the options from the start again """
 
+    RANDOM = False
     COUNTER = 0
     DEADLINE = 'Oct 20, 2022'
-    last_appointment_text = None
+    LAST_APPOINTMENT_TEXT = None
     while True:
-        text = click_last_category(11)
+        select_second_category(random=RANDOM)
+        if not RANDOM:
+            text = select_last_category()
+            RANDOM = not RANDOM
+        else:
+            RANDOM = not RANDOM
+            continue
         appointment_date = text.split(':')[-1].strip()
         if ((not text.startswith('No appointment')) and
             (earlier_than_deadline(appointment_date, DEADLINE)) and
-            (text != last_appointment_text)):
-            last_appointment_text = text
+            (text != LAST_APPOINTMENT_TEXT)):
+            LAST_APPOINTMENT_TEXT = text
             print(text)
             send_email(text)
             print('sleeping for 2 minutes')
             sleep(120)
         else:
-            _ = click_last_category(10)  # or anything other than our required category
             COUNTER += 1
-            if not COUNTER%100:
+            if not COUNTER%50:
                 print('restarting to clear cookies...')
                 break
     sleep(1)
 
 
 def get_appointment_info():
+    sleep(2)
     # grab appointment info from the alert box
     alert_box = driver.find_element_by_css_selector('.alert')
     text = alert_box.text
@@ -160,11 +169,11 @@ if __name__ == "__main__":
             driver.get(URL)
 
             login()
-            sleep(5)
+            click_new_booking()
 
-            # select first two categories and cycle the last one
-            click_until_last_category()
-            cycle_last_category()
+            # select first category and cycle the last two categories
+            select_first_category()
+            cycle_last_two_categories()
 
         except Exception as e:
             print(f'error encountered: {e}')
