@@ -2,8 +2,9 @@ import os
 import argparse
 import yagmail
 
-from time import sleep, strptime
+from ast import literal_eval
 from dotenv import load_dotenv
+from time import sleep, strptime
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -19,7 +20,7 @@ VFS_PASSWORD = os.environ['VFS_PASSWORD']
 
 SENDER_EMAIL = os.environ['SENDER_EMAIL']
 APP_PASSWORD = os.environ['APP_PASSWORD']
-RECEIVER_EMAIL = os.environ['RECEIVER_EMAIL']
+RECEIVER_EMAIL = literal_eval(os.environ['RECEIVER_EMAIL'])
 
 
 def login():
@@ -147,7 +148,6 @@ def get_appointment_info():
 def send_email(text):
     subject = 'DE VISA 🇩🇪 Appointment vacancy alert'
     content = [f'Appointment for VISA: {text}']
-
     with yagmail.SMTP(SENDER_EMAIL, APP_PASSWORD) as yag:
         yag.send(RECEIVER_EMAIL, subject, content)
 
