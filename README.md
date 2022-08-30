@@ -1,14 +1,14 @@
 # German VISA Appointment Vacancy Finder
 
 This application automates looking for a particular type of German 🇩🇪 VISA appointment for Indian 🇮🇳 citizens with selenium. It was written mostly to suit my needs but is easily configurable.
-It repeatedly checks for the appointment with some delay. When it finds an appointment, it sends an alert via your GMail to your preferred recipient so that they can book an appointment as soon as possible.
+It repeatedly checks for the appointment with a tiny delay. When it finds an appointment, it sends an alert via your GMail to your preferred recipient so that an appointment can be booked as soon as possible.
 
 ## Demo
 ![demo](media/demo.gif)
 
 ### Success
 ![appointment_found](media/appointment_found.png)
-when appointment is found, send an email
+when appointment is found, it sends an email
 ![send_email](media/send_email.png)
 
 ## Setup
@@ -22,11 +22,11 @@ when appointment is found, send an email
    Here's how a sample `.env` file looks like:
    ```
    VFS_USERNAME='max_mustermann@gmx.de'
-   VFS_PASSWORD='...'
+   VFS_PASSWORD='max123'
    ...
    ```
 4. Install dependencies.
-    - `conda env create -f env.yml`
+    - `conda env create -f env_cross_platform.yml`
 5. Activate conda environment: `conda activate visa`
 6. run `python appointment_finder.py [--headless] &`
     - this would run in the background and sends an alert when an empty slot is found, containing the date of the available appointment.
