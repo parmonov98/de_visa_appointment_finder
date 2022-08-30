@@ -1,4 +1,5 @@
 import os
+import argparse
 import yagmail
 
 from time import sleep, strptime
@@ -6,6 +7,7 @@ from dotenv import load_dotenv
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -162,10 +164,17 @@ def get_profile():
 
 if __name__ == "__main__":
     # keep checking for appointments forever (unless stopped explicitly from cmdline)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--headless', action='store_true', help='run headless (without GUI)')
+    args = parser.parse_args()
+
+    options = Options()
+    options.headless = args.headless
+
     while True:
         try:
             profile = get_profile()
-            driver = webdriver.Firefox(profile)
+            driver = webdriver.Firefox(profile, options=options)
             driver.get(URL)
 
             login()

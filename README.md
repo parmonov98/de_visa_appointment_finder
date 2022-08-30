@@ -28,8 +28,9 @@ when appointment is found, send an email
 4. Install dependencies.
     - `conda env create -f env.yml`
 5. Activate conda environment: `conda activate visa`
-6. run `python appointment_finder.py &`
+6. run `python appointment_finder.py [--headless] &`
     - this would run in the background and sends an alert when an empty slot is found, containing the date of the available appointment.
+    - when provided a `--headless` option, the service runs in the background without GUI (so you won't see a browser opening)
     - sometimes, it might happen that you're busy and didn't notice your email and by the time you do, the slot was taken. 
       Hence, this script keeps on running even after finding an appointment (after waiting for a few minutes), so that it keeps checking for new slots all the time.
       When you're finally done, do `kill %1` to stop the python program.
