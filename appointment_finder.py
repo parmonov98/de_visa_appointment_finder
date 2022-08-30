@@ -129,7 +129,7 @@ def cycle_last_two_categories():
             sleep(120)
         else:
             COUNTER += 1
-            if not COUNTER%50:
+            if not COUNTER%100:
                 print('restarting to clear cookies...')
                 break
     sleep(1)
